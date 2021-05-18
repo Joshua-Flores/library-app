@@ -1,0 +1,11 @@
+h1.display-4,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: bold;
+}
+
+h1 {
+  margin: 48px 0px 24px 0px;
+}
