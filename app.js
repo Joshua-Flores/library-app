@@ -1,3 +1,21 @@
+//set up library
+const myLibrary = [];
+
+//if a library exists in local storage, add it
+if (window.localStorage.getItem("library")) {
+  const localLibrary = JSON.parse(window.localStorage.getItem("library"));
+  localLibrary.forEach((book) => {
+    myLibrary.push(
+      new Book(book.name, book.author, book.numPages, book.read, book.id)
+    );
+  });
+}
+
+const updateLocalStorage = () => {
+  window.localStorage.setItem("library", JSON.stringify(myLibrary));
+};
+
+//create new book
 function Book(name, author, numPages, read, id) {
   this.name = name;
   this.author = author;
@@ -5,8 +23,6 @@ function Book(name, author, numPages, read, id) {
   this.read = read;
   this.id = id;
 }
-
-const myLibrary = [];
 
 //render library to page
 const renderLibrary = () => {
@@ -26,7 +42,17 @@ const renderLibrary = () => {
         </td>
     </tr>`;
   });
+  if (myLibrary.length == 0) {
+    console.log(myLibrary.length);
+    const library = document.getElementById("library");
+    library.setAttribute("style", "display:none");
+  } else {
+    library.setAttribute("style", "display:table");
+  }
 };
+
+//instantiate library when page loads
+renderLibrary();
 
 // toggle read status prototype function
 Book.prototype.toggleRead = function () {
@@ -38,6 +64,7 @@ Book.prototype.toggleRead = function () {
 const handleToggleRead = (id) => {
   const index = myLibrary.findIndex((book) => book.id === id);
   myLibrary[index].toggleRead();
+  updateLocalStorage();
 };
 
 //remove book from library
@@ -45,7 +72,13 @@ const removeBook = (id) => {
   const index = myLibrary.findIndex((book) => book.id === id);
   myLibrary.splice(index, 1);
   renderLibrary();
+  updateLocalStorage();
 };
+
+//hook into modal for JS use later
+const addBookModal = new bootstrap.Modal(
+  document.getElementById("addBookForm")
+);
 
 //add new book to library
 document.getElementById("newBookForm").addEventListener("submit", (e) => {
@@ -58,14 +91,16 @@ document.getElementById("newBookForm").addEventListener("submit", (e) => {
 
   //add the book onto the list of books
   myLibrary.push(new Book(name, author, numPages, read, uuidv4()));
-  console.log(myLibrary);
 
   //hide the modal and render the library
-  $("#addBookForm").modal("hide");
+  addBookModal.hide();
   renderLibrary();
 
   //clear the form
   document.getElementById("name").value = "";
   document.getElementById("author").value = "";
   document.getElementById("numberOfPages").value = "";
+
+  //add to localstorage
+  updateLocalStorage();
 });
