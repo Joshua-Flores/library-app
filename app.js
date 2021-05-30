@@ -1,3 +1,14 @@
+// initialize book object
+class Book {
+  constructor(name, author, numPages, read, id) {
+    this.name = name;
+    this.author = author;
+    this.numPages = numPages;
+    this.read = read;
+    this.id = id;
+  }
+}
+
 //set up library
 const myLibrary = [];
 
@@ -14,15 +25,6 @@ if (window.localStorage.getItem("library")) {
 const updateLocalStorage = () => {
   window.localStorage.setItem("library", JSON.stringify(myLibrary));
 };
-
-//create new book
-function Book(name, author, numPages, read, id) {
-  this.name = name;
-  this.author = author;
-  this.numPages = numPages;
-  this.read = read;
-  this.id = id;
-}
 
 //render library to page
 const renderLibrary = () => {
